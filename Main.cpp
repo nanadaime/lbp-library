@@ -1,113 +1,130 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
+#include <vector>
+#include <String>
+#include <conio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <direct.h>
+
 #include "lbplibrary.hpp"
 using namespace lbplibrary;
+using namespace std;
+stringstream ss;
+
+
+
+
+/*void make_dir()
+{
+	//mkdir
+	int dircheck;
+	char* dirname = "DRIVELBP";
+	
+
+	dircheck = _mkdir(dirname, 0777);
+
+	// check if directory is created or not
+	if (!dircheck)
+		printf("Directory created\n");
+	else {
+		printf("Unable to create directory\n");
+		exit(1);
+	}
+
+	getch();
+
+	system("dir");
+	getch();
+	
+
+
+
+}*/
+
+
+void make_dir2()
+{
+	{
+		if (_mkdir("\\drivemodded") == 0)
+		{
+			printf("Directory '\\testtmp' was successfully created\n");
+			system("dir \\testtmp");
+			if (_rmdir("\\testtmp") == 0)
+				printf("Directory '\\testtmp' was successfully removed\n");
+			else
+				printf("Problem removing directory '\\testtmp'\n");
+		}
+		else
+			printf("Problem creating directory '\\testtmp'\n");
+	}
+}
+
+
+
 
 void test_image()
 {
+	vector<cv::String> filenames;
 	cv::Mat img_output;
-	cv::Mat img_input = cv::imread("frames/1.png");
-	cv::imshow("Input", img_input);
+	cv::Mat img_input;
+	cv::Mat ct; //mhpws = 0 ???
 
-	cv::cvtColor(img_input, img_input, cv::COLOR_BGR2GRAY);
-	//cv::GaussianBlur(img_input, img_input, cv::Size(7, 7), 5, 3, cv::BORDER_CONSTANT);
+	cv::glob("C:\\Users\\user\\Desktop\\DRIVE\\*.TIF", filenames);
 
-	LBP *lbp;
-	lbp = new OLBP;     // 0-255
-	//lbp = new ELBP;     // 0-255
-	//lbp = new VARLBP;   // 0-953.0
-	//lbp = new CSLBP;    // 0-15
-	//lbp = new CSLDP;    // 0-15
-	//lbp = new XCSLBP;   // 0-15
-	//lbp = new SILTP;    // 0-80
-	//lbp = new CSSILTP;  // 33-120
-	//lbp = new SCSLBP;   // 0-15
-	//lbp = new BGLBP;    // 0-239
-	lbp->run(img_input, img_output);
+	//cv::Mat img_input = cv::imread("frames/1.png");
 
-	double min, max; cv::minMaxLoc(img_output, &min, &max); std::cout << "min: " << min << ", max: " << max;
-	cv::normalize(img_output, img_output, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+	for (size_t i = 0; i < filenames.size(); i++)
+	{
+		cv::Mat img_input = cv::imread(filenames[i]);
 
-	cv::imshow("Output", img_output);
+
+		cv::imshow("Input", img_input);
+
+		cv::cvtColor(img_input, img_input, cv::COLOR_BGR2GRAY);
+		//cv::GaussianBlur(img_input, img_input, cv::Size(7, 7), 5, 3, cv::BORDER_CONSTANT);
+
+		LBP* lbp;
+		lbp = new OLBP;     // 0-255
+		//lbp = new ELBP;     // 0-255
+		//lbp = new VARLBP;   // 0-953.0
+		//lbp = new CSLBP;    // 0-15
+		//lbp = new CSLDP;    // 0-15
+		//lbp = new XCSLBP;   // 0-15
+		//lbp = new SILTP;    // 0-80
+		//lbp = new CSSILTP;  // 33-120
+		//lbp = new SCSLBP;   // 0-15
+		//lbp = new BGLBP;    // 0-239
+		lbp->run(img_input, img_output);
+
+		double min, max; cv::minMaxLoc(img_output, &min, &max); std::cout << "min: " << min << ", max: " << max;
+		cv::normalize(img_output, img_output, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+
+
+
+
+		cv::imshow("Output", img_output);
+
+
+		
+
+		cv::imwrite(filenames, img_output);
+	}
 	cv::waitKey();
 	delete lbp;
 }
 
-void test_OCLBP()
+
+int main(int argc, const char** argv)
 {
-	cv::Mat img_output;
-	cv::Mat img_input = cv::imread("frames/1.png");
-	cv::imshow("Input", img_input);
+	make_dir2();
 
-	LBP *lbp;
-	lbp = new OCLBP;
 
-	std::vector<cv::Mat> vecMat;
-	lbp->run(img_input, vecMat);
-	for (int i = 0; i < 6; i++)
-	{
-		img_output = vecMat[i];
-		std::stringstream sstm;
-		sstm << "Output " << i;
-		cv::imshow(sstm.str(), img_output);
-	}
-
-	cv::waitKey();
-	delete lbp;
-}
-
-void test_webcam()
-{
-	cv::VideoCapture cap(0);
-	if (!cap.isOpened())
-		return;
-
-	LBP *lbp;
-	lbp = new OLBP;
-	//lbp = new ELBP;
-	//lbp = new VARLBP;
-	//lbp = new CSLBP;
-	//lbp = new CSLDP;
-	//lbp = new XCSLBP;
-	//lbp = new SILTP;
-	//lbp = new CSSILTP;
-	//lbp = new SCSLBP;
-	//lbp = new BGLBP;
-
-	cv::Mat frame, img_lbp;
-	while (1)
-	{
-		cap >> frame;
-		cv::resize(frame, frame, cv::Size(320, 240));
-
-		imshow("capture", frame);
-		show_multi_histogram(frame);
-
-		cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
-		//cv::GaussianBlur(frame, frame, cv::Size(7, 7), 5, 3, cv::BORDER_CONSTANT);
-
-		imshow("gray", frame);
-		show_histogram("gray_hist", frame);
-
-		lbp->run(frame, img_lbp);
-		cv::normalize(img_lbp, img_lbp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
-		cv::imshow("lbp", img_lbp);
-		show_histogram("lbp_hist", img_lbp);
-
-		if (cv::waitKey(10) >= 0)
-			break;
-	}
-
-	delete lbp;
-}
-
-int main(int argc, const char **argv)
-{
-	//test_image();
-	//test_OCLBP();
-	test_webcam();
+	test_image();
+	
 
 	return 0;
 }

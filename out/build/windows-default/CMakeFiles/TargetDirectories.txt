@@ -1,0 +1,7 @@
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/lbp.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/lbp_bin.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/install/local.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/install.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/edit_cache.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/rebuild_cache.dir
+C:/Users/Vassilis/Documents/Visual Studio Projects/lbplibrary/out/build/windows-default/CMakeFiles/list_install_components.dir
